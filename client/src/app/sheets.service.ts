@@ -29,6 +29,8 @@ export interface ISheetData{
   status: string
 }
 
+export type IParsedObject = Record<string, string|number|null>
+export type IParsedData = IParsedObject[]
 
 @Injectable({
   providedIn: 'root'
@@ -66,14 +68,14 @@ export class SheetsService{
   }
 
 
-  public parseSheetData(sheetTable: ISheetTable){
-    const parsedData: Object[] = [];
+  public parseSheetData(sheetTable: ISheetTable): IParsedData{
+    const parsedData: IParsedData = [];
     sheetTable.rows.forEach((row, rowIndex) => {
-      let parsedObject:Record<string, string|number|null> = {
+      let parsedObject:IParsedObject = {
         id: rowIndex + 1
       }
       sheetTable.cols.forEach((col, colIndex) => {
-        parsedObject[col.label] = row.c[colIndex]?.v || null
+        parsedObject[col.label.toLowerCase()] = row.c[colIndex]?.v || null
       })
       parsedData.push(parsedObject)
     })
